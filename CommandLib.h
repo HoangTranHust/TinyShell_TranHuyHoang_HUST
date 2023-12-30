@@ -4,6 +4,7 @@
 #include "ProcessLib.h"
 
 #define MAXARG 2
+#define MAX_PATH_LENGTH 1024
 
 // Clear terminal
 void clear() {
@@ -52,7 +53,6 @@ void exitTinyShell(){
     exit(0);
 }
 
-
 void help() {
     printf("This is HELP COMMAND\n");
 }
@@ -71,6 +71,24 @@ void getTime(){
     time(&t);
     tm_info = localtime(&t);
     printf("%02d:%02d:%02d\n", tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec);
+}
+
+// View value of PATH variable
+void viewPath() {
+    char *pathValue = getenv("PATH");
+    printf("PATH = %s\n", pathValue);
+}
+
+// Add a path to PATH variable
+void addPath(const char *newPath) {
+    FILE *file = fopen("/home/hoangtran/.bashrc", "a");
+    if (file == NULL) {
+        perror("Lỗi khi mở tệp ~/.bashrc");
+        exit(EXIT_FAILURE);
+    }
+    fprintf(file, "export PATH=$PATH:%s\n", newPath);
+    printf("Add new path success!");
+    fclose(file);
 }
 
 void processCmd(char *cmd);
@@ -109,7 +127,7 @@ void processCmd(char *cmd) {
     }
 
     // If k > MAXARG then print an error message
-    if (k > MAXARG) {
+    if (k < 1 || k > MAXARG) {
         printf("Bad command. Please try again");
     } else {
         char *cmdName = arr[0];
@@ -129,6 +147,8 @@ void processCmd(char *cmd) {
                 getDate();
             } else if(strcmp(cmdName, "time") == 0){
                 getTime();
+            } else if(strcmp(cmdName, "path") == 0){
+                viewPath();
             } else {
                 printf("Bad command! Please try again.");
             }
@@ -146,10 +166,12 @@ void processCmd(char *cmd) {
                 resumeProcess(atoi(argument));
             } else if(strcmp(cmdName, "ex") == 0){
                 execSh(argument);
+            } else if(strcmp(cmdName, "addpath") == 0){
+                addPath(argument);
+            } else if(strcmp(cmdName, "countdown") == 0){
+                runChildProcess("./countdown", argument);
             } else {
-                char tmp[100] = "./";
-                strcat(tmp, cmdName);
-                runChildProcess(tmp, argument);
+                printf("Bad command! Please try again.");
             }
         }
     }

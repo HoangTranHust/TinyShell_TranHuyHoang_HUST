@@ -1,0 +1,14 @@
+{
+    "folders": [
+        {
+            "path": "."
+        }
+    ],
+    "settings": {
+        "files.associations": {
+            "typeinfo": "c",
+            "ncurses.h": "c",
+            "stdlib.h": "c"
+        }
+    }
+}

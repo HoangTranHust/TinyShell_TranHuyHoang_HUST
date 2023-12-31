@@ -10,7 +10,7 @@ void initShell() {
     printf("\n\n****WELCOME TO MY LINUX TINY SHELL****");
     printf("\n\n****Tran Huy Hoang 20210386****");
     printf("\n\n******************************************");
-    sleep(0.5);
+    sleep(2);
     clear();
 }
 

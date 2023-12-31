@@ -20,6 +20,8 @@ int countProcess = 1;
 int ctrlCPressed = 0;
 
 int stoppedFlag = 0; // stoppedFlag = 0: Process has not stopped, toppedFlag = 1: Process has stopped
+
+// Get status of process. State 0: running, State 1: stopped, State 2: End
 int getProcessStatus(pid_t pid) {
     int status;
     int result = waitpid(pid, &status, WNOHANG | WUNTRACED | WCONTINUED);
@@ -30,14 +32,14 @@ int getProcessStatus(pid_t pid) {
         }
         else return 0; // Process is running
     } else if (WIFSTOPPED(status)) {
-        stoppedFlag = 1;
-        return 1;// Process stopped
+        stoppedFlag = 1; // Set stoppedFalg = 1 if process has stopped
+        return 1;// Process has stopped
     } else if (WIFCONTINUED(status)) {
-        stoppedFlag = 0; // Reset trạng thái nếu tiến trình được tiếp tục chạy
-        return 0; // Tiến trình đã được tiếp tục chạy
+        stoppedFlag = 0; // Set stoppedFalg = 0 if process continues to run
+        return 0; // Process is running
     }
     else {
-        return 2;
+        return 2; // Process has ended
     }
 }
 
@@ -69,7 +71,7 @@ void runInBackground(char *cmd) {
     } else {
         // Parent process
         char cmdName[MAXN] = "";
-        strcat(cmdName, cmd+2);
+        strcat(cmdName, cmd);
         strcat(cmdName, " bg");
         addProcess(child_pid, cmdName);
         printf("Process is running in the background.\n");
@@ -94,7 +96,7 @@ void runInForeground(char *cmd) {
     } else {
         // Parent process
         char cmdName[MAXN] = "";
-        strcat(cmdName, cmd+2);
+        strcat(cmdName, cmd);
         strcat(cmdName, " fg");
         addProcess(child_pid, cmdName);
         printf("Process is running in the foreground.\n");
@@ -102,14 +104,19 @@ void runInForeground(char *cmd) {
     }
 }
 
+// Check if a file is an executable file or not
+int isExecutableInPath(char *filename) {
+    char cmd[256];
+    snprintf(cmd, sizeof(cmd), "command -v %s >/dev/null 2>&1 || { exit 1; }", filename);
+    return system(cmd) == 0;
+}
+
 // Run child process in foreground mode or background mode
 void runChildProcess(char *cmd, char * mode){
-    // Check if cmd is a excutable file
-    if (access(cmd, X_OK) == -1) {
-        printf("Error: %s is not a valid executable.\n", cmd+2);
-        return;
-    }
-    else{
+    int execAble = isExecutableInPath(cmd);
+    if(execAble == 0){
+        printf("Bad command! Please try again\n");
+    } else {
         if (strcmp(mode, "bg") == 0) {
             runInBackground(cmd);
         } else if (strcmp(mode, "fg") == 0) {
@@ -128,9 +135,17 @@ void listProcess() {
     printf("--------------------------------------------------\n");
     printf("1           TinyShell               running\n");
     for (int i = 2; i <= countProcess; i++) {
-        printf("%-12d%-24s%-s\n", processes[i].id, processes[i].command, stringStatus[getProcessStatus(processes[i].pid)]);
+        if(getProcessStatus(processes[i].pid) != 2){
+            printf("%-12d%-24s%-s\n", processes[i].id, processes[i].command, stringStatus[getProcessStatus(processes[i].pid)]);
+        }
     }
     printf("==================================================\n");
+}
+
+void exitTinyShell(){
+    printf("Exiting TinyShell. Goodbye!\n");
+    sleep(1);
+    exit(0);
 }
 
 // Kill process
@@ -139,15 +154,35 @@ void killProcess(int id) {
         printf("Invalid process ID.\n");
         return;
     }
-
-    pid_t pidToKill = processes[id].pid;
-
-    // Send signal SIGTERM to kill process
-    if ((kill(pidToKill, SIGTERM) == 0)) {
-        printf("Process with ID %d has been terminated.\n", id);
-    } else {
-        perror("Error killing process");
+    else {
+        if(id == 1){
+            exitTinyShell();
+        } else {
+            pid_t pidToKill = processes[id].pid;
+            // Send signal SIGTERM to kill process
+            if ((kill(pidToKill, SIGTERM) == 0)) {
+                printf("Process with ID %d has been terminated.\n", id);
+            } else {
+                perror("Error killing process");
+            }
+        }
     }
+}
+
+// Kill all running processes, except TinyShell
+void killAllProcess() {
+    for(int i = 2; i <= countProcess; i++){
+        if(getProcessStatus(processes[i].pid) == 0){
+            pid_t pidToKill = processes[i].pid;
+            // Send signal SIGTERM to kill process
+            if ((kill(pidToKill, SIGTERM) != 0)) {
+                perror("Error killing process");
+                printf("Some processes have been terminated. End kill all processes. The remaining processes are not terminated!\n");
+                return;
+            }
+        }
+    }
+    printf("All processes have been terminated.\n");
 }
 
 // Stop process
@@ -156,9 +191,7 @@ void stopProcess(int id) {
         printf("Invalid process ID.\n");
         return;
     }
-
     pid_t pidToStop = processes[id].pid;
-
     // Send signal SIGSTOP to stop process
     if ((kill(pidToStop, SIGSTOP) == 0) && (kill(pidToStop+1, SIGSTOP) == 0)) {
         printf("Process with ID %d has been stopped.\n", id);
@@ -173,9 +206,7 @@ void resumeProcess(int id) {
         printf("Invalid process ID.\n");
         return;
     }
-
     pid_t pidToResume = processes[id].pid;
-
     // Send signal SIGCONT to resume process
     if ((kill(pidToResume, SIGCONT) == 0) && (kill(pidToResume+1, SIGCONT) == 0)) {
         printf("Process with ID %d has been resumed.\n", id);
@@ -184,14 +215,15 @@ void resumeProcess(int id) {
     }
 }
 
+// Signal handler function for SIGINT
 void sigintHandler(int signum) {
     if (signum == SIGINT) {
         printf("\nCtrl+C pressed. Foreground process has terminated\n");
     }
 }
 
+// Register a signal handling function for SIGINT
 void handleCtrl_C(){
-    // Đăng ký hàm xử lý tín hiệu cho SIGINT
     struct sigaction sa;
     sa.sa_handler = sigintHandler;
     sa.sa_flags = 0;

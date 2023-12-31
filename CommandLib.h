@@ -27,7 +27,7 @@ void listFiles() {
         perror("Error opening directory");
         return;
     }
-
+    printf("\n");
     while ((entry = readdir(dir)) != NULL) {
         if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
             printf("%s\t", entry->d_name);
@@ -44,13 +44,6 @@ void changeDir(char *path) {
     } else {
         printf("Current directory has been changed!\n");
     }
-}
-
-
-void exitTinyShell(){
-    printf("Exiting TinyShell. Goodbye!\n");
-    sleep(1);
-    exit(0);
 }
 
 void help() {
@@ -149,6 +142,8 @@ void processCmd(char *cmd) {
                 getTime();
             } else if(strcmp(cmdName, "path") == 0){
                 viewPath();
+            } else if(strcmp(cmdName, "killa") == 0){
+                killAllProcess();
             } else {
                 printf("Bad command! Please try again.");
             }
@@ -164,14 +159,12 @@ void processCmd(char *cmd) {
                 stopProcess(atoi(argument));
             } else if(strcmp(cmdName, "resume") == 0){
                 resumeProcess(atoi(argument));
-            } else if(strcmp(cmdName, "ex") == 0){
+            } else if(strcmp(cmdName, "exec") == 0){
                 execSh(argument);
             } else if(strcmp(cmdName, "addpath") == 0){
                 addPath(argument);
-            } else if(strcmp(cmdName, "countdown") == 0){
-                runChildProcess("./countdown", argument);
             } else {
-                printf("Bad command! Please try again.");
+                runChildProcess(cmdName, argument);
             }
         }
     }

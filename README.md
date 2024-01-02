@@ -58,3 +58,5 @@ Trong đó [id] là ID của tiến trình cần resume. Ví dụ:
 ``` 
 resume 2
 ```
+### 2.5. Hủy bỏ foreground process bằng tín hiệu ngắt (Ctrl+C)
+Để hủy bỏ foreground process đang chạy ta dùng tổ hợp phím **CTRL + C**

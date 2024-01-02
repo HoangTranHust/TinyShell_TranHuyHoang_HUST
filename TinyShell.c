@@ -6,10 +6,14 @@
 // Init Tiny Shell
 void initShell() {
     clear();
-    printf("\n\n******************************************");
-    printf("\n\n****WELCOME TO MY LINUX TINY SHELL****");
-    printf("\n\n****Tran Huy Hoang 20210386****");
-    printf("\n\n******************************************");
+    printf("\n\n");
+    printf("\t\t******************************************\n");
+    printf("\t\t*                                        *\n");
+    printf("\t\t*     WELCOME TO MY LINUX TINY SHELL     *\n");
+    printf("\t\t*                                        *\n");
+    printf("\t\t*     Tran Huy Hoang - 20210386- HUST    *\n");
+    printf("\t\t*                                        *\n");
+    printf("\t\t******************************************\n\n");
     sleep(2);
     clear();
 }

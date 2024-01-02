@@ -6,7 +6,7 @@ int main() {
     initscr(); // Init ncurses
     curs_set(0); // Hide the flashing cursor
 
-    int seconds = 30;
+    int seconds = 60;
     int minutes, seconds_remain;
 
     while (seconds >= 0) {

@@ -115,14 +115,14 @@ int isExecutableInPath(char *filename) {
 void runChildProcess(char *cmd, char * mode){
     int execAble = isExecutableInPath(cmd);
     if(execAble == 0){
-        printf("Bad command! Please try again\n");
+        printf("Bad command! Please try again or type 'help' to see a list of commands\n");
     } else {
         if (strcmp(mode, "bg") == 0) {
             runInBackground(cmd);
         } else if (strcmp(mode, "fg") == 0) {
             runInForeground(cmd);
         } else {
-            printf("Invalid mode. Use 'bg' or 'fg'.\n");
+            printf("Invalid mode. Please use 'bg' for background mode or 'fg' for foreground mode.\n");
         }
     }
 }
@@ -142,8 +142,13 @@ void listProcess() {
     printf("==================================================\n");
 }
 
+// Clear terminal
+void clear() {
+    printf("\033[H\033[J");
+}
+
 void exitTinyShell(){
-    printf("Exiting TinyShell. Goodbye!\n");
+    printf("Exit TinyShell... Goodbye!\n");
     sleep(1);
     exit(0);
 }
@@ -153,18 +158,15 @@ void killProcess(int id) {
     if (id < 1 || id > countProcess) {
         printf("Invalid process ID.\n");
         return;
-    }
-    else {
-        if(id == 1){
-            exitTinyShell();
+    } else if (id == 1){
+        exitTinyShell();
+    } else {
+        pid_t pidToKill = processes[id].pid;
+        // Send signal SIGTERM to kill process
+        if ((kill(pidToKill, SIGTERM) == 0)) {
+            printf("Process with ID %d has been terminated.\n", id);
         } else {
-            pid_t pidToKill = processes[id].pid;
-            // Send signal SIGTERM to kill process
-            if ((kill(pidToKill, SIGTERM) == 0)) {
-                printf("Process with ID %d has been terminated.\n", id);
-            } else {
-                perror("Error killing process");
-            }
+            perror("Error killing process");
         }
     }
 }
@@ -190,13 +192,16 @@ void stopProcess(int id) {
     if (id < 1 || id > countProcess) {
         printf("Invalid process ID.\n");
         return;
-    }
-    pid_t pidToStop = processes[id].pid;
-    // Send signal SIGSTOP to stop process
-    if ((kill(pidToStop, SIGSTOP) == 0) && (kill(pidToStop+1, SIGSTOP) == 0)) {
-        printf("Process with ID %d has been stopped.\n", id);
+    } else if(id == 1){
+        printf("Can not stop Tiny Shell!");
     } else {
-        perror("Error stopping process");
+        pid_t pidToStop = processes[id].pid;
+        // Send signal SIGSTOP to stop process
+        if ((kill(pidToStop, SIGSTOP) == 0) && (kill(pidToStop+1, SIGSTOP) == 0)) {
+            printf("Process with ID %d has been stopped.\n", id);
+        } else {
+            perror("Error stopping process");
+        }
     }
 }
 
@@ -205,13 +210,16 @@ void resumeProcess(int id) {
     if (id < 1 || id > countProcess) {
         printf("Invalid process ID.\n");
         return;
-    }
-    pid_t pidToResume = processes[id].pid;
-    // Send signal SIGCONT to resume process
-    if ((kill(pidToResume, SIGCONT) == 0) && (kill(pidToResume+1, SIGCONT) == 0)) {
-        printf("Process with ID %d has been resumed.\n", id);
+    } else if (id == 1){
+        return;
     } else {
-        perror("Error resuming process");
+        pid_t pidToResume = processes[id].pid;
+        // Send signal SIGCONT to resume process
+        if ((kill(pidToResume, SIGCONT) == 0) && (kill(pidToResume+1, SIGCONT) == 0)) {
+            printf("Process with ID %d has been resumed.\n", id);
+        } else {
+            perror("Error resuming process");
+        }
     }
 }
 

@@ -1,3 +1,3 @@
-ls
+dir
 time
 date

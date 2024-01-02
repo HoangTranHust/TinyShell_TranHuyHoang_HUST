@@ -6,9 +6,31 @@
 #define MAXARG 2
 #define MAX_PATH_LENGTH 1024
 
-// Clear terminal
-void clear() {
-    printf("\033[H\033[J");
+void help() {
+    printf("Tiny Shell - Tran Huy Hoang 20210386 - HUST\n");
+    printf("LIST OF COMMAND\n");
+    printf("======================================================================================================\n");
+    printf("No          Command             Function\n");
+    printf("------------------------------------------------------------------------------------------------------\n");
+    printf("1           help                Explain the meaning of all commands\n");
+    printf("2           dir                 List files and subfolders in the current directory\n");
+    printf("3           clear               Clear Tiny Shell screen\n");
+    printf("4           exit                Exit Tiny Shell\n");
+    printf("5           date                Displays the current date\n");
+    printf("6           time                Displays the current time\n");
+    printf("7           cd [path]           Change the current working directory to the directory with path [path]\n");
+    printf("8           path                Displays the PATH environment variable\n");
+    printf("9           addpath [path]      Add [path] to the PATH environment variable\n");
+    printf("10          [path] fg           Run process with path [path] in foreground mode\n");
+    printf("11          [path] bg           Run process with path [path] in background mode\n");
+    printf("12          list                Displays a list of processes\n");
+    printf("13          kill [id]           Kill a background process with ID [id]\n");
+    printf("14          killa               Kill all running background processes\n");
+    printf("15          stop [id]           Stop a background process with ID [id]\n");
+    printf("16          resume [id]         Resume execution of a paused background process with ID [id]\n");
+    printf("17          <Ctr + C>           Terminate the foreground process using the key combination Ctrl+C\n");
+    printf("18          exec [path]         Execute the *.sh file whose path is [path]\n");
+    printf("=====================================================================================================\n");
 }
 
 // Print the path of the current directory
@@ -18,7 +40,7 @@ void printDir() {
     printf("\n%s", cwd);
 }
 
-// Prints a list of files and subfolders in the current directory
+// List files and subfolders in the current directory
 void listFiles() {
     struct dirent *entry;
     DIR *dir = opendir(".");
@@ -29,15 +51,13 @@ void listFiles() {
     }
     printf("\n");
     while ((entry = readdir(dir)) != NULL) {
-        if (strcmp(entry->d_name, ".") != 0 && strcmp(entry->d_name, "..") != 0) {
-            printf("%s\t", entry->d_name);
-        }
+        printf("%s\t", entry->d_name);
     }
     printf("\n");
     closedir(dir);
 }
 
-// Change directory
+// Change the current working directory
 void changeDir(char *path) {
     if (chdir(path) != 0) {
         printf("Error changing directory. %s is not a directory\n", path);
@@ -46,10 +66,7 @@ void changeDir(char *path) {
     }
 }
 
-void help() {
-    printf("This is HELP COMMAND\n");
-}
-
+// Displays the current date
 void getDate(){
     time_t t;
     struct tm *tm_info;
@@ -58,6 +75,7 @@ void getDate(){
     printf("%02d/%02d/%04d\n", tm_info->tm_mday, tm_info->tm_mon + 1, tm_info->tm_year + 1900);
 } 
 
+// Displays the current time
 void getTime(){
     time_t t;
     struct tm *tm_info;
@@ -66,8 +84,8 @@ void getTime(){
     printf("%02d:%02d:%02d\n", tm_info->tm_hour, tm_info->tm_min, tm_info->tm_sec);
 }
 
-// View value of PATH variable
-void viewPath() {
+// Displays the PATH environment variable
+void displayPath() {
     char *pathValue = getenv("PATH");
     printf("PATH = %s\n", pathValue);
 }
@@ -128,7 +146,7 @@ void processCmd(char *cmd) {
         if (k == 1) {
             if (strcmp(cmdName, "help") == 0) {
                 help();
-            } else if (strcmp(cmdName, "ls") == 0) {
+            } else if (strcmp(cmdName, "dir") == 0) {
                 listFiles();
             } else if (strcmp(cmdName, "clear") == 0) {
                 clear();
@@ -141,11 +159,11 @@ void processCmd(char *cmd) {
             } else if(strcmp(cmdName, "time") == 0){
                 getTime();
             } else if(strcmp(cmdName, "path") == 0){
-                viewPath();
+                displayPath();
             } else if(strcmp(cmdName, "killa") == 0){
                 killAllProcess();
             } else {
-                printf("Bad command! Please try again.");
+                printf("Bad command! Please try again or type 'help' to see a list of commands.\n");
             }
         } 
         // 2 arguments

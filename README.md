@@ -51,8 +51,8 @@ Trong đó [path] là đường dẫn đến file thực thi của tiến trình
 ``` 
 list
 ```
-### 2.3. Kill một hoặc tất cả background process
 <a name="Kill-background-process"></a>
+### 2.3. Kill một hoặc tất cả background process
 + Để kill một background process, ta dùng lệnh:
 ``` 
 kill [id]

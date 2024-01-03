@@ -1,7 +1,7 @@
 # Project Tiny Shell - Trần Huy Hoàng 20210386 - HUST
 
-## 1. Giới thiệu về Tiny Shell
 <a name="Giới-thiệu-về-Tiny-Shell"></a>
+## 1. Giới thiệu về Tiny Shell
 
 + Tiny Shell là một giao diện dòng lệnh (command-line interface) giúp người dùng tương tác với hệ điều hành Linux bằng cách nhập lệnh và nhận kết quả trả về.
 Tiny Shell là một phiên bản đơn giản của Shell trong hệ điều hành Linux.
@@ -23,12 +23,10 @@ Tiny Shell là một phiên bản đơn giản của Shell trong hệ điều h�
    + 3.6. [Chức năng của lệnh path và addpath](#Chuc-nang-cua-lenh-path-addpath)
    + 3.7. [Chức năng của lệnh exec](#Chuc-nang-cua-lenh-exec)
 
-
-## 2. Chức năng quản lý tiến trình
 <a name="Chuc-nang-quan-ly-tien-trinh"></a>
-
-### 2.1. Thực hiện tiến trình ở chế độ foreground, background
+## 2. Chức năng quản lý tiến trình
 <a name="Thuc-hien-tien-trinh-o-che-do-foreground-background"></a>
+### 2.1. Thực hiện tiến trình ở chế độ foreground, background
 + Thực hiện tiến trình ở chế độ **foreground**, ta dùng câu lệnh:
 ``` 
 [path] fg
@@ -44,9 +42,9 @@ Trong đó [path] là đường dẫn đến file thực thi của tiến trình
 Trong đó [path] là đường dẫn đến file thực thi của tiến trình cần chạy. Ví dụ: 
 ``` 
 ./Countdown bg
-``` 
-### 2.2. Hiển thị danh sách các tiến trình
+```
 <a name="Hien-thi-danh-sach-cac-tien-trinh"></a>
+### 2.2. Hiển thị danh sách các tiến trình
 Để hiển thị danh sách các tiến trình, ta dùng câu lệnh: 
 ``` 
 list
@@ -65,8 +63,8 @@ kill 2
 ``` 
 killa
 ```
-### 2.4. Stop và Resume một background process
 <a name="Stop-Resume-background-process"></a>
+### 2.4. Stop và Resume một background process
 + Để stop một background process đang chạy, ta dùng lệnh:
 ``` 
 stop [id]
@@ -83,26 +81,26 @@ Trong đó [id] là ID của tiến trình cần resume. Ví dụ:
 ``` 
 resume 2
 ```
-### 2.5. Hủy bỏ foreground process bằng tín hiệu ngắt (Ctrl+C)
 <a name="Huy-bo-foreground-process"></a>
+### 2.5. Hủy bỏ foreground process bằng tín hiệu ngắt (Ctrl+C)
 Để hủy bỏ foreground process đang chạy ta dùng tổ hợp phím **CTRL + C**
 
-## 3. Giới thiệu các chức năng khác
 <a name="Gioi-thieu-cac-chuc-nang-khac"></a>
-### 3.1. Chức năng của lệnh help
+## 3. Giới thiệu các chức năng khác
 <a name="Chuc-nang-cua-lenh-help"></a>
+### 3.1. Chức năng của lệnh help
 Để hiện thị danh sách thông tin của tất cả các câu lệnh, ta dùng lệnh:
 ``` 
 help
 ```
-### 3.2 Chức năng của lệnh dir
 <a name="Chuc-nang-cua-lenh-dir"></a>
+### 3.2 Chức năng của lệnh dir
 Để liệt kê các tệp và thư mục con ở trong thư mục làm việc hiện tại, ta dùng lệnh:
 ``` 
 dir 
 ```
-### 3.3 Chức năng của lệnh clear và exit
 <a name="Chuc-nang-cua-lenh-clear-exit"></a>
+### 3.3 Chức năng của lệnh clear và exit
 + Để xóa toàn bộ nội dung trên màn hình của Tiny Shell, ta dùng lệnh:
 ``` 
 clear
@@ -111,8 +109,8 @@ clear
 ``` 
 exit
 ```
-### 3.4. Chức năng của lệnh date và time
 <a name="Chuc-nang-cua-lenh-date-time"></a>
+### 3.4. Chức năng của lệnh date và time
 + Để hiển thị ngày hiện tại, ta dùng lệnh:
 ``` 
 date
@@ -121,8 +119,8 @@ date
 ``` 
 time
 ```
-### 3.5. Chức năng của lệnh cd
 <a name="Chuc-nang-cua-lenh-cd"></a>
+### 3.5. Chức năng của lệnh cd
 Để thay đổi thư mục làm việc hiện tại, ta dùng lệnh: 
 ``` 
 cd [path]
@@ -131,8 +129,8 @@ Trong đó [path] là đường dẫn đến thư mục mới. Ví dụ:
 ``` 
 cd /home/hoangtran/Downloads
 ```
-### 3.6. Chức năng của lệnh path và addpath
 <a name="Chuc-nang-cua-lenh-path-addpath"></a>
+### 3.6. Chức năng của lệnh path và addpath
 Để in ra giá trị của biến môi trường PATH, ta dùng lệnh:
 ``` 
 path
@@ -145,8 +143,8 @@ Trong đó [path] là đường dẫn tuyệt đối cần thêm vào biến PAT
 ``` 
 addpath /home/hoangtran/newPath
 ```
-### 3.7. Chức năng của lệnh exec
 <a name="Chuc-nang-cua-lenh-exec"></a>
+### 3.7. Chức năng của lệnh exec
 Để thực thi file .sh (Shell script), ta dùng lệnh:
 ``` 
 exec [path]
